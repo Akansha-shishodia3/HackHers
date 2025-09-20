@@ -1,0 +1,53 @@
+{% extends "empbase.html" %} {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 ms-2">
+      <div
+        class="borderani shadow"
+        style="border: 4px solid #2f2965; padding-top: 20px"
+      >
+        <h4 style="color: #2f2965; text-align: center">Add Skills</h4>
+        <hr
+          class="border border-secondary border-2 opacity-50"
+          style="width: 70%; margin-left: 15%"
+        />
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert" style="width: 80%; margin: 3% auto; text-align: center">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+        <div style="width: 60%; margin: 0 auto" class="fw-bold">
+          <form action="{% url 'addskills' %}" method="post">
+            {% csrf_token %}
+           
+            <div class="form-group">
+              <label>Skill Name</label>
+              <input
+                type="text"
+                name="skill_name"
+                class="botborder form-control"
+                required="true"
+              />
+            </div>
+           
+            <br />
+            <div class="form-group" style="margin-left: 30%">
+              <input
+                type="submit"
+                value="Submit"
+                class="btn"
+                style="color: white; background-color: #2f2965"
+              />
+              <input type="Reset" value="Reset" class="btn btn-secondary" />
+            </div>
+          </form>
+          <br />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

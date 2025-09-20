@@ -1,0 +1,51 @@
+{% extends "empbase.html" %}
+{% load static %}
+{% block body %}
+
+
+<div class="row mt-2 g-4">
+  <div class="col-lg-4 bg-light p-3">
+    <div class="d-flex flex-column gap-3">
+      <div class="card shadow-sm">
+        <img src="{% static 'images/emp/emppage3.jpeg' %}" class="card-img-top" alt="Post Jobs" style="object-fit: cover; height: 10rem;" />
+        <div class="card-body">
+          <h5 class="card-title">Post New Jobs</h5>
+          <p class="card-text">
+            Post jobs within 2 minutes, just fill a form and submit it!
+          </p>
+          <a href="{% url 'postjob' %}" class="btn text-white" style="background-color: #2f2965">Click here to Post Jobs</a>
+        </div>
+      </div>
+      <div class="card shadow-sm">
+        <img src="{% static 'images/emp/js1.jpg' %}" class="card-img-top" alt="Manage Applicants" style="object-fit: cover; height: 10rem;" />
+        <div class="card-body">
+          <h5 class="card-title">Manage Applicants</h5>
+          <p class="card-text">
+            View applicants resume, take virtual interviews, trace selection
+            process.
+          </p>
+          <a href="{% url 'manageapp' %}" class="btn text-white" style="background-color: #2f2965">Click here to Manage Applicants</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="p-4 h-100 rounded-3" style="background-image: url('{% static 'images/cardimages/image2.jpg' %}'); background-size: cover; background-position: center;">
+      <div class="p-4 rounded-3" style="background-color: rgba(255, 255, 255, 0.9);">
+        <h2 class="text-center m-3 fw-bold" style="color: #2f2965;">Welcome!</h2>
+        <hr class="border-secondary border-2 opacity-50 mx-auto" style="width: 70%;">
+
+        <h4 class="mt-4">Get Started with Smart Hire AI!</h4>
+        <p>There is no need to advertise the vacancies and sort all applicant details, conduct selection procedures and complete the formalities. Just post jobs with one click.</p>
+        
+        <h5 class="mt-3">Post Jobs</h5>
+        <p>Posting Jobs on Smart Hire AI is as simple and fast as sending an email. You can post jobs by just filling a form and can also change or update the job details. You can specify the qualifications and skills that you want to be acquired by the applicant.</p>
+        
+        <h5 class="mt-3">Manage Applicants</h5>
+        <p>You can view applicant's details, resume, conduct online/virtual interviews, sort candidates according to skills or requirement and also track the selection process.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<style>
+   .prt{
+        background:linear-gradient(#036a905b,rgba(255, 255, 255, 0.831),#036b90);
+    }
+    /* Optional: to ensure the background color covers the page */
+    .flex-grow-1 {
+        background-color: #f0f2f5;
+    }
+</style>
+<div class="container my-5 prt">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header text-white text-center p-4" style="background-color: #036b90;">
+          <h3 class="mb-0"><i class="fa-solid fa-envelope me-2"></i>Enquiry/Feedback Form</h3>
+        </div>
+        <div class="card-body p-4 p-sm-5">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+          <form action="{% url 'saveenq' %}" method="post">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              <input type="text" name="name" id="name" class="form-control" placeholder="Enter Your Name" required/>
+              <label for="name">Enter Your Name</label>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Select Your Gender</label>
+              <div class="d-flex">
+                <div class="form-check me-3">
+                  <input class="form-check-input" type="radio" name="gender" id="male" value="Male">
+                  <label class="form-check-label" for="male">
+                    Male
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="gender" id="female" value="Female">
+                  <label class="form-check-label" for="female">
+                    Female
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-3">
+              <textarea name="address" id="address" class="form-control" placeholder="Enter Your Address" style="height: 100px"></textarea>
+              <label for="address">Enter Your Address</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="number" name="contactno" id="contactno" class="form-control" placeholder="Enter Contact No" required/>
+              <label for="contactno">Enter Contact No</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="email" name="emailaddress" id="emailaddress" class="form-control" placeholder="Enter Email Address" required/>
+              <label for="emailaddress">Enter Email Address</label>
+            </div>
+
+            <div class="form-floating mb-4">
+              <textarea name="enquirytext" id="enquirytext" class="form-control" placeholder="Enter Enquiry Text" style="height: 100px" required></textarea>
+              <label for="enquirytext">Enter Enquiry Text</label>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+              <button type="submit" class="btn btn-lg text-white px-5" style="background-color: #036b90;">Submit</button>
+              <button type="reset" class="btn btn-secondary btn-lg px-5">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block add %}
+<br/>
+<hr class="border border-warning border-2 opacity-50"><br/>
+<div class="row">
+  <div class="col-sm-4 text-center">
+    <h4><i class="fa-solid fa-phone text-warning"></i> Contact Us:</h4>
+    <p>+91-9878554214 <br/> +91-9878554005</p>
+    <div class="row" style="margin-bottom: -10rem;">
+      <div class="col-sm-12 text-center">
+        <a href="#"><i class="fa-brands fa-facebook fa-2xl" style="color: #1877f2;"></i></a>
+        <a href="#"><i class="fa-brands fa-linkedin fa-2xl" style="color:#0077b5;"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube text-danger fa-2xl"></i></a>
+        <a href="#"><i class="fa-brands fa-twitter fa-2xl" style="color: #02a9ed;"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 text-center">
+    <h4><i class="fa-solid fa-location-dot text-warning"></i> Address: </h4>
+    <p>Nitra Technical Campus <br/>Near Yashoda Hospital <br/> Sector-23, Sanjay Nagar -201002 <br/>Ghaziabad (UP)</p>
+  </div>
+  <div class="col-sm-4 text-center">
+    <h4><i class="fa-solid fa-envelope text-warning"></i> Email Address: </h4>
+    <p>hireinfo@gmail.com</p>
+    <p>infohireai@gmail.org</p><br/>
+  </div>
+</div>
+<br/>
+{% endblock add %}

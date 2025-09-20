@@ -1,0 +1,208 @@
+{% extends "empbase.html" %}
+{% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 ms-2">
+      <div class="shadow borderani" style="border: 4px solid #2f2965; padding: 20px;">
+        <h4 style="color: #2f2965; text-align: center;">Interview Analytics Dashboard</h4>
+        <hr class="border border-secondary border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+        <!-- Stats Cards -->
+        <div class="row text-center my-4">
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-header fw-bold">Total Interviews</div>
+              <div class="card-body">
+                <h5 class="card-title display-4">{{ total_interviews }}</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card text-white bg-success mb-3">
+              <div class="card-header fw-bold">Interviews Passed</div>
+              <div class="card-body">
+                <h5 class="card-title display-4">{{ total_passed }}</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card text-white bg-danger mb-3">
+              <div class="card-header fw-bold">Interviews Failed</div>
+              <div class="card-body">
+                <h5 class="card-title display-4">{{ total_failed }}</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card text-white bg-info mb-3">
+              <div class="card-header fw-bold">Average Score</div>
+              <div class="card-body">
+                <h5 class="card-title display-4">{{ average_score|floatformat:1 }}%</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header fw-bold">
+                Interviews by Type
+              </div>
+              <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="interviewTypeChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header fw-bold">
+                Interview Outcomes
+              </div>
+              <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="interviewStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header fw-bold">
+                Interviews by Difficulty
+              </div>
+              <div class="card-body">
+                <canvas id="interviewDifficultyChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header fw-bold">
+                Future Analytics
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center text-muted">
+                    <p>More charts coming soon!</p>
+                </div>
+            </div>
+        </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include Chart.js from a CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Data from Django template
+    const typeLabels = {{ type_labels|safe }};
+    const typeCounts = {{ type_counts|safe }};
+    const difficultyLabels = {{ difficulty_labels|safe }};
+    const difficultyCounts = {{ difficulty_counts|safe }};
+    const statusLabels = {{ status_labels|safe }};
+    const statusCounts = {{ status_counts|safe }};
+
+    // --- NEW CHART: Interview Outcomes (Doughnut Chart) ---
+    const statusColorMap = {
+        'Passed': 'rgba(25, 135, 84, 0.7)',   // Green
+        'Failed': 'rgba(220, 53, 69, 0.7)',   // Red
+        'Pending': 'rgba(108, 117, 125, 0.7)', // Gray
+        'Incomplete': 'rgba(255, 193, 7, 0.7)'  // Yellow
+    };
+    const statusBorderColorMap = {
+        'Passed': 'rgba(25, 135, 84, 1)',
+        'Failed': 'rgba(220, 53, 69, 1)',
+        'Pending': 'rgba(108, 117, 125, 1)',
+        'Incomplete': 'rgba(255, 193, 7, 1)'
+    };
+
+    const statusCtx = document.getElementById('interviewStatusChart').getContext('2d');
+    const interviewStatusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: 'Interview Outcomes',
+                data: statusCounts,
+                backgroundColor: statusLabels.map(label => statusColorMap[label] || 'rgba(150, 150, 150, 0.7)'),
+                borderColor: statusLabels.map(label => statusBorderColorMap[label] || 'rgba(150, 150, 150, 1)'),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            }
+        }
+    });
+
+    // Chart 1: Interviews by Type (Pie Chart)
+    const typeCtx = document.getElementById('interviewTypeChart').getContext('2d');
+    const interviewTypeChart = new Chart(typeCtx, {
+        type: 'pie',
+        data: {
+            labels: typeLabels,
+            datasets: [{
+                label: 'Number of Interviews',
+                data: typeCounts,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            }
+        }
+    });
+
+    // Chart 2: Interviews by Difficulty (Bar Chart)
+    const difficultyCtx = document.getElementById('interviewDifficultyChart').getContext('2d');
+    const interviewDifficultyChart = new Chart(difficultyCtx, {
+        type: 'bar',
+        data: {
+            labels: difficultyLabels,
+            datasets: [{
+                label: 'Number of Interviews',
+                data: difficultyCounts,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.7)',  // Easy
+                    'rgba(255, 159, 64, 0.7)', // Hard
+                    'rgba(255, 205, 86, 0.7)', // Moderate
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+});
+</script>
+{% endblock body %}

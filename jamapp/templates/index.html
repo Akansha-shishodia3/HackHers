@@ -1,0 +1,405 @@
+{% extends "base.html" %} {% load static %} {% block body %}
+<!--Slider start-->
+<div class="container-fluid p-0 mt-2">
+  <div class="row g-0">
+    <div class="col-12">
+      <div
+        id="carouselExampleIndicators"
+        class="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-indicators">
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="0"
+            class="active"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="1"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="2"
+            aria-label="Slide 3"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="3"
+            aria-label="Slide 4"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="4"
+            aria-label="Slide 5"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="5"
+            aria-label="Slide 6"
+          ></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active" data-bs-interval="4000">
+            <img
+              src="{% static 'images/my jam images/slide_3.png' %}"
+              class="d-block w-100"
+            />
+          </div>
+          <div class="carousel-item" data-bs-interval="4000">
+            <img
+              src="{% static 'images/slider_3.png' %}"
+              class="d-block w-100"
+            />
+          </div>
+          <div class="carousel-item" data-bs-interval="4000">
+            <img
+              src="{% static 'images/my jam images/temp1.jpg' %}"
+              width="100%"
+              class="d-block w-100"
+            />
+          </div>
+          <div class="carousel-item" data-bs-interval="4000">
+            <img
+              src="{% static 'images/slider_4.jpg' %}"
+              class="d-block w-100"
+            />
+          </div>
+          <div class="carousel-item" data-bs-interval="4000">
+            <img
+              src="{% static 'images/My JAM images/slide_5.jpg' %}"
+              class="d-block w-100"
+            />
+          </div>
+          <div class="carousel-item" data-bs-interval="4000">
+            <img
+              src="{% static 'images/My JAM images/slide_2.jpg' %}"
+              class="d-block w-100"
+            />
+          </div>
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Slider End-->
+
+<!--Main Section Start-->
+<main class="container flex-grow-1">
+  <div class="row mt-2">
+    <div
+      class="col-lg-4 shadow border border-2 border-warning p-2 d-flex flex-column mb-3 mb-lg-0"
+      style="max-height: 550px"
+    >
+      <div class="bg-warning text-light text-center">
+        <h4
+          class="fw-bold"
+          style="
+            background: linear-gradient(to bottom right, black 20%, purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          "
+        >
+          Notice Board
+        </h4>
+      </div>
+      <div
+        class="bg-white text-left fs-6 p-2 flex-grow-1"
+        style="overflow-y: auto"
+      >
+        <ul class="list-unstyled notice-board">
+          {% for n in nw %}
+          <li class="mb-2">
+            {{n.newstext}}
+            <img
+              src="{% static 'images/my jam images/new.gif'%}"
+              style="width: 30px"
+            />
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="row mt-5">
+        <div class="col-sm-12">
+          <h2 class="display-5 text-center section-title">What We Offer</h2>
+          <hr
+            class="border-warning border-2 opacity-50 mx-auto"
+            style="width: 50%"
+          />
+
+          <div class="row pt-4 g-4">
+            <div class="col-lg-4 col-md-6">
+              <div class="card card-feature shadow-sm h-100">
+                <img
+                  src="{% static 'images/cardimages/resume.png' %}"
+                  class="card-img-top card-img-top-custom"
+                  alt="Resume Analysis"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Resume Analysis</h5>
+                  <p class="card-text">
+                    Skills-based resume analysis with gap highlights and
+                    improvement suggestions.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="card card-feature shadow-sm h-100">
+                <img
+                  src="{% static 'images/cardimages/mock.png' %}"
+                  class="card-img-top card-img-top-custom"
+                  alt="Mock Interviews"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Mock Interviews</h5>
+                  <p class="card-text">
+                    Conduct practice interviews and get instant feedback on your
+                    answers, confidence, and communication skills.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <div class="card card-feature shadow-sm h-100">
+                <img
+                  src="{% static 'images/cardimages/skill.png' %}"
+                  class="card-img-top card-img-top-custom"
+                  alt="Skill Suggestions"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Skill Suggestions</h5>
+                  <p class="card-text">
+                    Analyzes your profile to identify skill gaps and provides
+                    tailored recommendations to improve job readiness.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="display-5 text-center section-title my-5">
+        Smart Hire AI for Job Seekers
+      </h2>
+      <hr
+        class="border-warning border-2 opacity-50 mx-auto"
+        style="width: 50%"
+      />
+      <div
+        class="row align-items-center feature-section feature-gradient-jobseeker my-4"
+      >
+        <div class="col-lg-5 p-3">
+          <img
+            src="{% static 'images/cardimages/image1.jpg' %}"
+            class="img-fluid shadow feature-image"
+            alt="Job Seeker"
+          />
+        </div>
+        <div class="col-lg-7 p-4">
+          <h3 class="hAnimationClass">Find the most exciting startup jobs</h3>
+          <ul class="feature-list mt-4">
+            <li>Register Yourself</li>
+            <li>Create Your Profile</li>
+            <li>Upload Your CV</li>
+            <li>Get hired by trusted Companies!</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-sm-12">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+              <div class="card h-100 card-feature shadow-sm">
+                <img
+                  src="{% static 'images/cardimages/bias.png' %}"
+                  class="card-img-top"
+                  alt="Bias-Free"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Bias-Free Shortlisting</h5>
+                  <p class="card-text">
+                    Our AI focuses only on skills and qualifications, hiding
+                    personal details to ensure fair and unbiased evaluation.
+                  </p>
+                  <a
+                    href="{% url 'jobseekerreg' %}"
+                    class="btn btn-outline-primary mt-auto"
+                    >Register Now</a
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card h-100 card-feature shadow-sm">
+                <img
+                  src="{% static 'images/cardimages/skill_sugg.png' %}"
+                  class="card-img-top"
+                  alt="Skill Suggestions"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Personalized Skill Suggestions</h5>
+                  <p class="card-text">
+                    Based on your resume, our system identifies missing skills
+                    and recommends relevant courses to help you improve.
+                  </p>
+                  <a
+                    href="{% url 'skill_suggestions' %}"
+                    class="btn btn-outline-primary mt-auto"
+                    >Get Suggestions</a
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card h-100 card-feature shadow-sm">
+                <img
+                  src="{% static 'images/cardimages/ai_interview.png' %}"
+                  class="card-img-top"
+                  alt="AI Interview"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Mock AI Interview</h5>
+                  <p class="card-text">
+                    Take AI-driven practice interviews with real-time feedback
+                    on your answers and confidence to prepare effectively.
+                  </p>
+                  <a
+                    href="{% url 'login' %}"
+                    class="btn btn-outline-primary mt-auto"
+                    >Practice Now</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recruiter Section -->
+      <h2 class="display-5 text-center section-title my-5">
+        Smart Hire AI for Recruiters
+      </h2>
+      <hr
+        class="border-warning border-2 opacity-50 mx-auto"
+        style="width: 50%"
+      />
+      <div
+        class="row align-items-center feature-section feature-gradient-recruiter my-4"
+      >
+        <div class="col-lg-7 p-4 order-lg-1">
+          <h3 class="hAnimationClass">You need the best, we have the best</h3>
+          <ul class="feature-list mt-4">
+            <li>Register Yourself</li>
+            <li>Post Unlimited Jobs</li>
+            <li>View AI-Screened Resumes</li>
+            <li>Hire the best candidate!</li>
+          </ul>
+        </div>
+        <div class="col-lg-5 p-3 order-lg-2">
+          <img
+            src="{% static 'images/cardimages/image2.jpg' %}"
+            class="img-fluid shadow feature-image"
+            alt="Recruiter"
+          />
+        </div>
+      </div>
+
+      <div class="row mt-4 mb-5">
+        <div class="col-sm-12">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+              <div class="card h-100 card-feature shadow-sm">
+                <img
+                  src="{% static 'images/cardimages/rank.png' %}"
+                  class="card-img-top"
+                  alt="Ranked Candidates"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Ranked Candidate Lists</h5>
+                  <p class="card-text">
+                    Get data-driven, prioritized lists of candidates based on
+                    skills and experience to quickly identify the best fits.
+                  </p>
+                  <a
+                    href="{% url 'employerreg' %}"
+                    class="btn btn-outline-primary mt-auto"
+                    >Register Yourself</a
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card h-100 card-feature shadow-sm">
+                <img
+                  src="{% static 'images/cardimages/gap.png' %}"
+                  class="card-img-top"
+                  alt="Skill Gap Insights"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Skill Gap Insights</h5>
+                  <p class="card-text">
+                    Use advanced analytics to identify skill gaps in candidate
+                    profiles for strategic hiring and workforce development.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card h-100 card-feature shadow-sm">
+                <img
+                  src="{% static 'images/cardimages/management.png' %}"
+                  class="card-img-top"
+                  alt="Application Management"
+                />
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">Application Management Dashboard</h5>
+                  <p class="card-text">
+                    A centralized dashboard gives you real-time visibility into
+                    your recruitment pipeline to streamline the hiring process.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!--Main Section End-->
+
+{% endblock body %}

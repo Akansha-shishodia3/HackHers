@@ -1,0 +1,122 @@
+{% extends "jobbase.html" %}
+{% load static %}
+
+{% block body %}
+
+<h4 style="color: #2f2965; text-align: center; padding-top: 3%;">
+    Job's List For You
+</h4>
+<hr class="border border-secondary border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert" style="width: 80%; margin: 3% auto; text-align: center">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="container-fluid px-4">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover shadow-sm align-middle">
+            <thead style="background-color: #2f2965; color: white;">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Firm Name</th>
+                    <th scope="col">Job Title</th>
+                    <th scope="col">Location</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in page_obj %}
+                <tr>
+                    <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+                    <td>{{ j.firmname }}</td>
+                    <td>{{ j.jobtitle }}</td>
+                    <td>{{ j.location }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#jobDetailsModal-{{ j.id }}">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center p-4">No jobs available at the moment.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modals for Job Details -->
+    {% for j in page_obj %}
+    <div class="modal fade" id="jobDetailsModal-{{ j.id }}" tabindex="-1" aria-labelledby="jobDetailsModalLabel-{{ j.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="jobDetailsModalLabel-{{ j.id }}" style="color: #2f2965;">{{ j.jobtitle }} at {{ j.firmname }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr><th style="width: 25%;">Firm Name</th><td>{{ j.firmname }}</td></tr>
+                            <tr><th>Job Title</th><td>{{ j.jobtitle }}</td></tr>
+                            <tr><th>Post</th><td>{{ j.post }}</td></tr>
+                            <tr><th>Description</th><td>{{ j.jobdesc }}</td></tr>
+                            <tr><th>Qualification</th><td>{{ j.qualification }}</td></tr>
+                            <tr>
+                                <th>Skills</th>
+                                <td>
+                                    {% for skill in j.skills.all %}
+                                        <span class="badge bg-secondary">{{ skill.name }}</span>
+                                    {% empty %}
+                                        No skills listed.
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr><th>Experience</th><td>{{ j.experience }}</td></tr>
+                            <tr><th>Location</th><td>{{ j.location }}</td></tr>
+                            <tr><th>Package (p.a.)</th><td>{{ j.salarypa }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    {% if j.id in applied_job_ids %}
+                        <button class="btn btn-success" disabled><i class="fas fa-check-circle"></i> Applied</button>
+                    {% else %}
+                        <a href="{% url 'appliedjobs' id=j.id %}" class="btn btn-warning">Apply Now</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo; Previous</a></li>
+            {% endif %}
+
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% endblock body %}

@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<!--Slider start-->
+      <div class="container-fluid p-0 mt-2">
+        <div class="row g-0">
+          <div class="col-12">
+            <div
+              id="carouselExampleIndicators"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-indicators">
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="0"
+                  class="active"
+                  aria-label="Slide 1"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="1"
+                  aria-label="Slide 2"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="2"
+                  aria-label="Slide 3"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="3"
+                  aria-label="Slide 4"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="4"
+                  aria-label="Slide 5"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="5"
+                  aria-label="Slide 6"
+                ></button>
+              </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="4000">
+                  <img
+                    src="{% static 'images/my jam images/slide_3.png' %}"
+                    class="d-block w-100"
+                  />
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                  <img
+                    src="{% static 'images/slider_3.png' %}"
+                    class="d-block w-100"
+                  />
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                  <img
+                    src="{% static 'images/my jam images/temp1.jpg' %}"
+                    width="100%"
+                    class="d-block w-100"
+                  />
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                  <img
+                    src="{% static 'images/slider_4.jpg' %}"
+                    class="d-block w-100"
+                  />
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                  <img
+                    src="{% static 'images/My JAM images/slide_5.jpg' %}"
+                    class="d-block w-100"
+                  />
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                  <img
+                    src="{% static 'images/My JAM images/slide_2.jpg' %}"
+                    class="d-block w-100"
+                  />
+                </div>
+              </div>
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Slider End-->
+      
+<!--<h4>This is About Us Page</h4>-->
+<div class="container-fluid">
+    <div class="row m-2 mt-0 mb-0 p-0">
+        <div class="col-sm-12 pt-2 p-0 bg-white border border-4 border-info overflow-auto" style="height: 540px; border-radius: 10px 10px 10px 10px; overflow: hidden;">
+            <h3 class="text-center pt-2 p-0 fw-bold" style="color: #036b90;">About Smart Hire AI</h3>
+                    <hr class="border border-warning border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+                <div class="text-dark p-5 pt-3 text-justify" style="font-size: 17px; text-justify: inter-word;">
+                    <p><b>Smart Hire AI</b> is intermediate between Jobseekers and Employers. The purpose is to enable the Jobseekers to search for the jobs from any remote location. The Jobseeker can Search for the jobs which with the Consultancy without actually visiting the Consultancy.</p>
+                <p>The major prospect of this project is to make an applications which is administrative based to provide the complete information of the Job consultancy’s that the job seeker can be made easy in searching jobs and recruiting for companies.</p>
+                    <p>Applicants can browse through the vacancy details that are posted and can apply for the jobs online. Employers can browse through the posted resumes and select suitable candidates.</p>
+                    <p>Smart Hire AI is a online platform that provides job boarding solutions and helps job seekers to apply for posts that they are suitable for.</p>
+                    <p>Popular job board software like Monster and Naukri provide an open-ended job portal where all companies can post their job vacancies, and candidates can choose from a comprehensive list of options. However, many top tiering companies have started to create their own job portals to attract viable candidates and conduct their recruitment process. It is an excellent model for an organization to locate ideal candidates for various job positions and helps consolidate their resumes. In addition, it enables them to extend their reach and find the best candidate for their vacancy. Hire on-demand dedicated developers of desired skill & experience.</p>
+                    <p>It provides a broader perspective and takes applications from all around the world. Considering that human resource is one of the most expensive assets of a business, you need to make sure that you have the most efficient person for that job.</p>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+<div class="col-sm-12" style="background-image: url('{% static 'images/slide_4.jpeg' %}'); background-size: cover;">
+<div class="row m-3 mt-5">
+    <div class="col-sm-12 aboutDiv1 shadow"  style="font-size: 18px; border-radius: 20px 0px 20px 0px; border: 4px solid #0dcaf0;">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="text-center fw-bold pt-3 p-0" style="color: #036b90;"> Smart Hire ai For Jobseeker</h3>
+                    <hr class="border border-warning border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+            <div class="text-dark p-5 pt-3 text-justify">
+                    <p><b>S</b>mart <b>H</b>ire <b>A</b>I provides functionalities for job seekers. Applicants can post their resumes with personal and professional details.</p>
+                    <p>They can also update the resume as frequently as required. The applicant can also browse through the present vacancies available.</p>
+                    <p>The major prospect of this project is to make an applications which is administrative based to provide the complete information of the Job consultancy’s that the job seeker can be made easy in searching jobs and recruiting for companies.</p>
+
+                </div>
+               </div>
+
+            <div class="col-sm-4">
+                <img src="{% static 'images/cardimages/js4.jpeg' %}" width="100%" height="75%" style="margin-top: 10%; marign-left: -10%;"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row m-3 mt-5">
+    <div class="col-sm-12 aboutDiv1 shadow"  style="font-size: 18px; border-radius: 20px 0px 20px 0px; border: 4px solid #0dcaf0;">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="text-center fw-bold pt-3 p-0" style="color: #036b90;"> Smart Hire Ai For Recruiters</h3>
+                    <hr class="border border-warning border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+                <img src="{% static 'images/cardimages/js.jpeg' %}" width="100%" height="75%" style="margin-top: 10%; marign-left: -10%;"/>
+            </div>
+            <div class="col-sm-8">
+            <div class="text-dark p-5 pt-3 text-justify">
+                    <p>The major prospect of this project is to make an applications which is administrative based to provide the complete information of the Job consultancy’s that the job seeker can be made easy in searching jobs and recruiting for companies.</p>
+                <p>In Existing system, Employers need to advertise the vacancies and sort all applicant details, conduct selection procedures and complete the formalities.</p>
+                <p>But in SHA Employers can post vacancy details and update the details as and when necessary.</p>
+                <p>Employers can search through applicant resumes based on different criteria.</p></p>
+
+                </div>
+               </div>
+
+            
+        </div>
+    </div>
+</div>
+
+        </div>
+</div>
+{% endblock body %}

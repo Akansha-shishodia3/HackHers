@@ -1,0 +1,111 @@
+{% extends "jobbase.html" %}
+{% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 ms-2">
+      <div class="shadow borderani" style="border: 4px solid #2f2965; padding: 20px;">
+        <h4 style="color: #2f2965; text-align: center;">Skill Suggestions</h4>
+        <hr class="border border-secondary border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert" style="width: 80%; margin: 3% auto; text-align: center">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <div style="width: 80%; margin: 0 auto;" class="fw-bold">
+          <p>Select a job from the list below to see how your skills match up and get personalized suggestions.</p>
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="job_id">Select a Job:</label>
+              <select name="job_id" id="job_id" class="form-select mt-2" required>
+                <option value="">-- Choose a Job --</option>
+                {% for job in jobs %}
+                  <option value="{{ job.id }}" {% if job.id == selected_job_id %}selected{% endif %}>
+                    {{ job.jobtitle }} at {{ job.firmname }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <br>
+            <div class="form-group text-center">
+              <button type="submit" class="btn" style="color: white; background-color: #2f2965;">Get Suggestions</button>
+            </div>
+          </form>
+          <br>
+        </div>
+
+        {% if analysis_complete %}
+        <hr class="border border-secondary border-1 opacity-50" style="width: 90%; margin: 20px auto;">
+        <div style="width: 80%; margin: 0 auto;">
+          <h5 class="text-center" style="color: #2f2965;">Analysis for: {{ selected_job.jobtitle }}</h5>
+          <br>
+          
+          {% if not required_skills %}
+            <div class="alert alert-secondary">
+              <h4 class="alert-heading">No Skills Listed</h4>
+              <p>This job posting does not have any specific skills listed. We recommend reviewing the job description carefully to understand the requirements.</p>
+            </div>
+          {% else %}
+            {# The job has skills, so show the analysis #}
+            {% if not missing_skills %}
+              <div class="alert alert-success">
+                <h4 class="alert-heading">Excellent Match!</h4>
+                <p>Congratulations! Your skills are a perfect match for this role. You have all the required skills listed for this job. You are a strong candidate and we encourage you to apply.</p>
+              </div>
+            {% elif not matching_skills %}
+               <div class="alert alert-warning">
+                <h4 class="alert-heading">Opportunity to Grow!</h4>
+                <p>This is a great chance to expand your skillset. You currently do not have any of the skills required for this role. See the list below to get started.</p>
+              </div>
+            {% else %}
+              <div class="alert alert-info">
+                <h4 class="alert-heading">Good Progress!</h4>
+                <p>You have a good set of skills for this role, but there's room for improvement. See the breakdown below to identify which skills you can learn to become an even stronger candidate.</p>
+              </div>
+            {% endif %}
+
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <h6><i class="fa-solid fa-file-lines text-primary"></i> Skills Found in Your Resume</h6>
+                <ul class="list-group">
+                  {% for skill in user_skills %}
+                    <li class="list-group-item text-capitalize">{{ skill }}</li>
+                  {% empty %}
+                    <li class="list-group-item">We couldn't find any relevant skills in your resume. Please ensure it's a text-based file (not an image).</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="col-md-4">
+                <h6><i class="fa-solid fa-check text-success"></i> Your Matching Skills</h6>
+                <ul class="list-group">
+                  {% for skill in matching_skills %}
+                    <li class="list-group-item text-capitalize">{{ skill }}</li>
+                  {% empty %}
+                    <li class="list-group-item">No matching skills found.</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="col-md-4">
+                <h6><i class="fa-solid fa-lightbulb text-warning"></i> Skills to Improve</h6>
+                <ul class="list-group">
+                  {% for skill in missing_skills %}
+                    <li class="list-group-item text-capitalize">{{ skill }}</li>
+                  {% empty %}
+                    <li class="list-group-item">None. Great job!</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

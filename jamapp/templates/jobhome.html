@@ -1,0 +1,89 @@
+{% extends "jobbase.html" %} {% load static %} 
+
+{% block body %}
+
+<!--Main Start-->
+<div class="row mt-2 g-4 flex-grow-1">
+  <div class="col-lg-4 bg-light p-3">
+    <div class="d-flex flex-column gap-3">
+      <div class="card shadow-sm">
+        <img src="{% static 'images/cardimages/js3.jpeg' %}" class="card-img-top" alt="Find Jobs" style="height: 10rem; object-fit: cover;" />
+        <div class="card-body">
+          <h5 class="card-title">Find New Jobs</h5>
+          <p class="card-text">
+            Get updated with Smart Hire AI and find the perfect job for you.
+          </p>
+        </div>
+      </div>
+      <div class="card shadow-sm">
+        <img src="{% static 'images/cardimages/image3.jpg' %}" class="card-img-top" alt="Apply for Job" style="height: 10rem; object-fit: cover;" />
+        <div class="card-body">
+          <h5 class="card-title">Apply for Jobs</h5>
+          <p class="card-text">
+            View jobs and apply with your resume in just one click.
+          </p>
+          <a href="{% url 'applyjob' %}" class="btn text-white" style="background-color: #2f2965">Click here to View Jobs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8 p-4">
+    <h2 class="fw-bold text-center" style="color: #2f2965;">
+      Evolve Your Career with Smart Hire AI!
+    </h2>
+    <hr class="border-secondary border-2 opacity-50 mx-auto" style="width: 70%;" />
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+      <div class="col">
+        <a href="{% url 'applyjob' %}" class="text-decoration-none">
+          <div class="d-flex align-items-center p-3 shadow-sm rounded h-100 border-start border-5 border-warning">
+            <i class="fa-solid fa-briefcase fa-2x text-warning mx-3"></i>
+            <h5 class="mb-0 text-dark fw-bold">Newest Jobs</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'appliedjobsview' %}" class="text-decoration-none">
+          <div class="d-flex align-items-center p-3 shadow-sm rounded h-100 border-start border-5 border-primary">
+            <i class="fa-solid fa-clipboard-list fa-2x text-primary mx-3"></i>
+            <h5 class="mb-0 text-dark fw-bold">My Applied Jobs</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'myresume' %}" class="text-decoration-none">
+          <div class="d-flex align-items-center p-3 shadow-sm rounded h-100 border-start border-5 border-success">
+            <i class="fa-regular fa-file-lines fa-2x text-success mx-3"></i>
+            <h5 class="mb-0 text-dark fw-bold">My Resume</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'skill_suggestions' %}" class="text-decoration-none">
+          <div class="d-flex align-items-center p-3 shadow-sm rounded h-100 border-start border-5" style="border-color: var(--bs-purple) !important;">
+            <i class="fa-brands fa-searchengin fa-2x mx-3" style="color: var(--bs-purple);"></i>
+            <h5 class="mb-0 text-dark fw-bold">Skill Suggestions</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'career_advice' %}" class="text-decoration-none">
+          <div class="d-flex align-items-center p-3 shadow-sm rounded h-100 border-start border-5 border-danger">
+            <i class="fa-sharp fa-solid fa-comment-medical fa-2x text-danger mx-3"></i>
+            <h5 class="mb-0 text-dark fw-bold">Career Advice</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col">
+        <a href="{% url 'mock_interview_options' %}" class="text-decoration-none">
+          <div class="d-flex align-items-center p-3 shadow-sm rounded h-100 border-start border-5 border-info">
+            <i class="fa-solid fa-address-card fa-2x text-info mx-3"></i>
+            <h5 class="mb-0 text-dark fw-bold">Mock Interview</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,417 @@
+{% extends "jobbase.html" %}
+{% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 ms-2">
+      <div class="shadow borderani fw-bold" style="border: 4px solid #2f2965; padding: 20px;">
+        <h4 id="interview-title" style="color: #2f2965; text-align: center;">Mock Interview</h4>
+        <p class="text-center text-muted">
+          Based on {{ interview_info.type }}: {{ interview_info.details }} ({{ interview_info.difficulty }} Difficulty)
+        </p>
+        <hr class="border border-secondary border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+        <!-- Start Overlay -->
+        <div id="start-overlay" class="text-center p-4">
+            <h2 style="color: #2f2965;">Ready to Begin?</h2>
+            <p class="lead my-4">This interview will be conducted in fullscreen mode. You will not be able to exit fullscreen or switch tabs until the interview is complete. Please ensure you are in a quiet environment.</p>
+            <button id="startInterviewBtn" class="btn btn-lg btn-primary">
+                <i class="fa-solid fa-play"></i> Start Interview
+            </button>
+        </div>
+
+        <!-- Interview Content (Initially Hidden) -->
+        <div id="interview-content" style="width: 90%; margin: 0 auto; display: none;">
+          <div class="d-flex justify-content-between align-items-center my-4">
+            <h5 id="question-header" style="color: #2f2965; margin-bottom: 0;">Question {{ current_question_number }} of {{ total_questions }}</h5>
+            <div class="text-end">
+                <h5 class="mb-0">Time Left: <span id="timer" class="badge bg-danger">00:00</span></h5>
+            </div>
+          </div>
+          <p id="question-text" class="fs-5">{{ question.question }}</p>
+
+          <form method="post" id="answerForm">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="user_answer">Your Answer:</label>
+              <div id="recording-status" class="alert alert-info mt-2" style="display: none;"></div>
+              <textarea name="user_answer" id="user_answer" class="form-control mt-2" rows="8" placeholder="Your transcribed answer will appear here. Click 'Start Recording' to begin." readonly></textarea>
+            </div>
+            <br>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="button" id="startRecordingBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-microphone"></i> Start Recording
+                    </button>
+                    <button type="button" id="stopRecordingBtn" class="btn btn-danger" disabled>
+                        <i class="fa-solid fa-stop"></i> Stop Recording
+                    </button>
+                </div>
+                
+                {% if not is_last_question %}
+                  <button type="submit" id="nextQuestionBtn" class="btn" style="color: white; background-color: #2f2965;" disabled>
+                    Next Question <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                {% else %}
+                  <button type="submit" id="nextQuestionBtn" class="btn btn-success" disabled>
+                    Finish Interview <i class="fa-solid fa-flag-checkered"></i>
+                  </button>
+                {% endif %}
+            </div>
+          </form>
+          <form method="post" id="forceEndForm" action="{% url 'terminate_interview' %}" style="display: none;">
+              {% csrf_token %}
+              <input type="hidden" name="reason" value="The interview was exited prematurely by leaving fullscreen or switching tabs.">
+          </form>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+document.addEventListener('DOMContentLoaded', function() {
+ 
+    let endTime; // This will be updated for each question
+    // --- CONFIGURATION (from Django context) ---
+    const startTime = {{ start_time }};
+    const duration = {{ duration }};
+    endTime = (startTime + duration) * 1000; // Convert to milliseconds for JS Date
+
+    // --- DOM ELEMENTS ---
+    const startOverlay = document.getElementById('start-overlay');
+    const startInterviewBtn = document.getElementById('startInterviewBtn');
+    const interviewContent = document.getElementById('interview-content');
+    const questionHeader = document.getElementById('question-header');
+    const questionText = document.getElementById('question-text');
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('startRecordingBtn');
+    const stopBtn = document.getElementById('stopRecordingBtn');
+    const userAnswerTextarea = document.getElementById('user_answer');
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    const recordingStatus = document.getElementById('recording-status');
+    const answerForm = document.getElementById('answerForm');
+    const interviewTitle = document.getElementById('interview-title');
+    const csrfToken = answerForm.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    // --- STATE VARIABLES ---
+    let mediaRecorder;
+    let audioChunks = [];
+    let countdown;
+    let isSubmitting = false; // Flag to prevent double submissions
+    let isInterviewFinished = false; // Flag to check if the entire interview is done
+
+    // --- INTERVIEW START ---
+    startInterviewBtn.addEventListener('click', async () => {
+        try {
+            await document.documentElement.requestFullscreen();
+            // If fullscreen is successful, hide overlay, show content, and start timer
+            startOverlay.style.display = 'none';
+            interviewContent.style.display = 'block';
+            interviewTitle.textContent = 'Mock Interview in Progress';
+            startTimer();
+        } catch (err) {
+            alert('Fullscreen mode is required to start the interview. Please allow it and try again.');
+            console.error('Fullscreen request failed:', err);
+        }
+    });
+
+    // --- TIMER FUNCTIONS ---
+    function startTimer() {
+        countdown = setInterval(() => {
+            const now = Date.now();
+            let timeLeft = Math.round((endTime - now) / 1000);
+
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+                clearInterval(countdown);
+                timerDisplay.textContent = "Time's Up!";
+                timerDisplay.classList.remove('bg-danger');
+                timerDisplay.classList.add('bg-secondary');
+
+                // Stop recording if it's active
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    stopRecording();
+                }
+
+                // Automatically submit the form
+                if (!isSubmitting) {
+                    recordingStatus.textContent = "Time's up! Moving to the next question...";
+                    recordingStatus.className = 'alert alert-warning mt-2';
+                    recordingStatus.style.display = 'block';
+                    setTimeout(submitAnswer, 2000);
+                }
+            }
+            updateTimerDisplay(timeLeft);
+        }, 1000);
+    }
+
+    function updateTimerDisplay(timeLeft) {
+        const minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    // --- RECORDING FUNCTIONS ---
+    async function startRecording() {
+        // Prevent starting a new recording if time is up
+        if (Date.now() >= endTime) {
+            recordingStatus.textContent = "Time is up for this question.";
+            return;
+        }
+        // Request fullscreen if not already in it. This is required for the interview.
+        if (!document.fullscreenElement) {
+            try {
+                await document.documentElement.requestFullscreen();
+            } catch (err) {
+                alert('Fullscreen mode is required to start the interview. Please allow it and try again.');
+                recordingStatus.textContent = 'Error: Fullscreen permission is required to record.';
+                recordingStatus.className = 'alert alert-danger mt-2';
+                recordingStatus.style.display = 'block';
+                return; // Stop execution if fullscreen is denied
+            }
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                transcribeAudio(audioBlob);
+                audioChunks = [];
+                // Stop all tracks to release the microphone
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            nextBtn.disabled = true;
+            userAnswerTextarea.value = '';
+            userAnswerTextarea.placeholder = 'Recording... Speak now.';
+            recordingStatus.textContent = '🔴 Recording...';
+            recordingStatus.style.display = 'block';
+
+        } catch (err) {
+            console.error("Error accessing microphone:", err);
+            recordingStatus.textContent = 'Error: Could not access microphone. Please grant permission and try again.';
+            recordingStatus.className = 'alert alert-danger mt-2';
+            recordingStatus.style.display = 'block';
+        }
+    }
+
+    function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            recordingStatus.textContent = 'Processing your answer... Please wait.';
+            recordingStatus.className = 'alert alert-info mt-2';
+            userAnswerTextarea.placeholder = 'Processing...';
+        }
+    }
+
+    // --- TRANSCRIPTION FUNCTION ---
+    async function transcribeAudio(audioBlob) {
+        const formData = new FormData();
+        formData.append('audio_data', audioBlob, 'user_answer.webm');
+
+        try {
+            const response = await fetch("{% url 'transcribe_audio' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (data.status === 'ok') {
+                userAnswerTextarea.value = data.transcript;
+                nextBtn.disabled = false;
+                recordingStatus.textContent = 'Transcription complete. You can now proceed to the next question.';
+                recordingStatus.className = 'alert alert-success mt-2';
+            } else {
+                throw new Error(data.transcript || 'Transcription failed.');
+            }
+        } catch (error) {
+            console.error('Transcription error:', error);
+            userAnswerTextarea.placeholder = 'Could not transcribe audio. Please try recording again.';
+            recordingStatus.textContent = `Error during transcription: ${error.message}. Please try recording again.`;
+            recordingStatus.className = 'alert alert-danger mt-2';
+            startBtn.disabled = false; // Allow user to try again
+        }
+    }
+
+    function disableAllButtons() {
+        startBtn.disabled = true;
+        stopBtn.disabled = true;
+        nextBtn.disabled = true;
+    }
+
+    // --- AJAX AND UI UPDATE FUNCTIONS ---
+    async function submitAnswer() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        disableAllButtons();
+        const buttonText = nextBtn.innerText;
+        const isFinishing = buttonText.includes('Finish');
+        nextBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${isFinishing ? 'Finishing...' : 'Saving...'}`;
+
+        if (isFinishing) {
+            isInterviewFinished = true;
+        }
+
+        const formData = new FormData(answerForm);
+
+        try {
+            // The form's action attribute is the current URL, which is what we want to POST to.
+            const response = await fetch(answerForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': csrfToken }
+            });
+
+            // Check if the response is OK and is of type JSON before parsing
+            if (!response.ok) {
+                let errorMsg = `Server responded with status ${response.status}.`;
+                // Try to get a more specific error message from the server's JSON response
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.message || errorMsg;
+                } catch (e) {
+                    // This catches the "Unexpected token '<'" error if the server sent HTML
+                    errorMsg = "The server returned an unexpected response. Please try again.";
+                }
+                throw new Error(errorMsg);
+            }
+
+            const data = await response.json();
+
+            if (data.status === 'next_question') {
+                updateQuestionUI(data);
+                isSubmitting = false;
+            } else if (data.status === 'finished') {
+                if (document.fullscreenElement) {
+                    await document.exitFullscreen();
+                }
+                alert(data.message);
+                window.location.href = data.result_url; // Redirect to the new results page
+            } else {
+                // This handles cases where the server returns a 200 OK status but with a logical error
+                throw new Error(data.message || "An unknown error occurred while processing your answer.");
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert(`An error occurred: ${error.message}. Please try submitting again.`);
+
+            // Reset UI to allow the user to try again, instead of forcing termination
+            isSubmitting = false;
+            const isFinishing = nextBtn.innerHTML.includes('Finishing');
+            if (isFinishing) {
+                 nextBtn.innerHTML = 'Finish Interview <i class="fa-solid fa-flag-checkered"></i>';
+            } else {
+                 nextBtn.innerHTML = 'Next Question <i class="fa-solid fa-arrow-right"></i>';
+            }
+            // Re-enable buttons so the user can retry
+            startBtn.disabled = false;
+            stopBtn.disabled = true; // Recording is not active
+            nextBtn.disabled = userAnswerTextarea.value.trim() === ''; // Only enable if there's an answer
+        }
+    }
+
+    function updateQuestionUI(data) {
+        // Update question text and header
+        questionHeader.textContent = `Question ${data.current_question_number} of {{ total_questions }}`;
+        questionText.textContent = data.question;
+
+        // *** FIX: Update the form action and browser URL to prevent state mismatch ***
+        answerForm.action = data.next_url;
+        window.history.pushState({path: data.next_url}, '', data.next_url);
+
+
+        // Reset answer area and buttons
+        userAnswerTextarea.value = '';
+        userAnswerTextarea.placeholder = 'Your transcribed answer will appear here. Click \'Start Recording\' to begin.';
+        recordingStatus.style.display = 'none';
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        nextBtn.disabled = true;
+
+        // Update the "Next/Finish" button text and style
+        if (data.is_last_question) {
+            nextBtn.style.backgroundColor = ''; // remove inline style
+            nextBtn.style.color = ''; // remove inline style
+            nextBtn.classList.add('btn-success');
+            nextBtn.innerHTML = 'Finish Interview <i class="fa-solid fa-flag-checkered"></i>';
+        } else {
+            nextBtn.classList.remove('btn-success');
+            nextBtn.style.color = 'white';
+            nextBtn.style.backgroundColor = '#2f2965';
+            nextBtn.innerHTML = 'Next Question <i class="fa-solid fa-arrow-right"></i>';
+        }
+
+        // Reset and start the timer for the new question
+        clearInterval(countdown);
+        endTime = (data.start_time + data.duration) * 1000;
+        timerDisplay.classList.add('bg-danger');
+        timerDisplay.classList.remove('bg-secondary');
+        startTimer();
+    }
+
+    // --- FORM SUBMISSION HANDLING ---
+    answerForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission (page reload)
+        submitAnswer();
+    });
+
+    // --- SECURITY & FULLSCREEN ---
+    function forceEndInterview() {
+        // Don't terminate if it's a normal submission or the interview is already finished
+        if (isSubmitting || isInterviewFinished) return;
+        isSubmitting = true; // Prevent other actions
+
+        // Stop any active recording without processing it
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        }
+
+        alert('You have left the interview environment. The session will now be terminated for security reasons.');
+        document.getElementById('forceEndForm').submit();
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+        // If we are no longer in fullscreen AND the interview isn't supposed to be over
+        if (!document.fullscreenElement && !isInterviewFinished) {
+            forceEndInterview();
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        // If the page is hidden (tab switch, minimize) and the interview isn't finished
+        if (document.visibilityState === 'hidden' && !isInterviewFinished) {
+            forceEndInterview();
+        }
+    });
+
+    // --- INITIALIZATION ---
+    // Event listeners are set up, but the timer only starts after user clicks "Start Interview"
+    startBtn.addEventListener('click', startRecording); // This is inside the interview content
+    stopBtn.addEventListener('click', stopRecording); // This is inside the interview content
+});
+</script>
+
+{% endblock body %}

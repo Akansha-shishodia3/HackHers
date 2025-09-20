@@ -1,0 +1,185 @@
+{% extends "empbase.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="container-fluid py-4">
+    <h4 style="color: #2f2965; text-align: center;">
+        Applicant Full Profile: <span class="">********</span>
+    </h4>
+    <hr class="border border-secondary border-2 opacity-50" style="width: 70%; margin-left: 15%;">
+
+    <div class="row px-3">
+        <!-- Column 1: Details and Resume -->
+        <div class="col-lg-5 mb-4">
+            <!-- Card 1: Applicant Details -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header fw-bold" style="background-color: #e9ecef;">
+                    <i class="fas fa-user-circle"></i> Personal Information
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-bordered mb-0">
+                        <tr>
+                            <th style="width: 35%;">Name</th>
+                            <td class="">********</td>
+                        </tr>
+                        <tr>
+                            <th>Gender</th>
+                            <td class="">********</td>
+                        </tr>
+                        <tr>
+                            <th>Address</th>
+                            <td>********</td>
+                        </tr>
+                        <tr>
+                            <th>Contact No</th>
+                            <td>{{obj.contactno}}</td>
+                        </tr>
+                        <tr>
+                            <th>Email Address</th>
+                            <td>{{obj.emailaddress}}</td>
+                        </tr>
+                        <tr>
+                            <th>Date Of Birth</th>
+                            <td>{{obj.dob}}</td>
+                        </tr>
+                        <tr>
+                            <th>Qualification</th>
+                            <td>{{obj.qualification}}</td>
+                        </tr>
+                        <tr>
+                            <th>Experience</th>
+                            <td>{{obj.experience}}</td>
+                        </tr>
+                        <tr>
+                            <th>Key Skills</th>
+                            <td>{{obj.keyskills}}</td>
+                        </tr>
+                        <tr>
+                            <th>Applied Date</th>
+                            <td>{{obj.applieddate|date:"d M, Y"}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Card 2: Resume Viewer -->
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold" style="background-color: #e9ecef;">
+                    <i class="fas fa-file-alt"></i> Resume
+                </div>
+                <div class="card-body">
+                    {% if job_seeker.resume and job_seeker.resume.url %}
+                        <p>
+                            <a href="{{ job_seeker.resume.url }}" class="btn btn-primary" target="_blank">
+                                <i class="fas fa-download"></i> Download / View Full Resume
+                            </a>
+                        </p>
+                        {% if job_seeker.resume.url|lower|slice:"-4:" == ".pdf" %}
+                            <div class="embed-responsive embed-responsive-1by1">
+                                <iframe class="embed-responsive-item" src="{% url 'view_resume' id=obj.id %}" width="100%" height="600px" style="border: 1px solid #ccc;"></iframe>
+                            </div>
+                        {% else %}
+                            <p class="text-muted mt-3">Resume is not a PDF, please download to view.</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-center text-muted p-4">No resume has been uploaded by the applicant.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 2: Interview Dashboard -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 style="color: #2f2965; text-align: center;">
+                        <i class="fas fa-chart-pie"></i> Mock Interview Analytics
+                    </h5>
+                    <hr>
+                    {% if total_interviews > 0 %}
+                        <!-- Stats Cards -->
+                        <div class="row text-center my-4">
+                            <div class="col-lg-3 col-md-6 mb-4"><div class="card text-white bg-primary h-100"><div class="card-header fw-bold">Total</div><div class="card-body d-flex align-items-center justify-content-center"><h5 class="card-title display-4">{{ total_interviews }}</h5></div></div></div>
+                            <div class="col-lg-3 col-md-6 mb-4"><div class="card text-white bg-success h-100"><div class="card-header fw-bold">Passed</div><div class="card-body d-flex align-items-center justify-content-center"><h5 class="card-title display-4">{{ total_passed }}</h5></div></div></div>
+                            <div class="col-lg-3 col-md-6 mb-4"><div class="card text-white bg-danger h-100"><div class="card-header fw-bold">Failed</div><div class="card-body d-flex align-items-center justify-content-center"><h5 class="card-title display-4">{{ total_failed }}</h5></div></div></div>
+                            <div class="col-lg-3 col-md-6 mb-4"><div class="card text-white bg-info h-100"><div class="card-header fw-bold">Avg. Score</div><div class="card-body d-flex align-items-center justify-content-center"><h5 class="card-title display-4">{{ average_score|floatformat:1 }}%</h5></div></div></div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header fw-bold">Interview Outcomes</div>
+                                    <div class="card-body d-flex justify-content-center align-items-center p-2">
+                                        <canvas id="interviewStatusChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header fw-bold">Interviews by Type</div>
+                                    <div class="card-body d-flex justify-content-center align-items-center p-2">
+                                        <canvas id="interviewTypeChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header fw-bold">Interviews by Difficulty</div>
+                                    <div class="card-body">
+                                        <canvas id="interviewDifficultyChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted p-5">
+                            <i class="fas fa-info-circle fa-3x mb-3"></i>
+                            <p>This applicant has not completed any mock interviews yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if total_interviews > 0 %}
+<!-- Include Chart.js from a CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Data from Django template
+    const typeLabels = {{ type_labels|safe }};
+    const typeCounts = {{ type_counts|safe }};
+    const difficultyLabels = {{ difficulty_labels|safe }};
+    const difficultyCounts = {{ difficulty_counts|safe }};
+    const statusLabels = {{ status_labels|safe }};
+    const statusCounts = {{ status_counts|safe }};
+
+    // --- Chart: Interview Outcomes (Doughnut Chart) ---
+    const statusColorMap = {'Passed': 'rgba(25, 135, 84, 0.7)','Failed': 'rgba(220, 53, 69, 0.7)','Pending': 'rgba(108, 117, 125, 0.7)','Incomplete': 'rgba(255, 193, 7, 0.7)'};
+    const statusBorderColorMap = {'Passed': 'rgba(25, 135, 84, 1)','Failed': 'rgba(220, 53, 69, 1)','Pending': 'rgba(108, 117, 125, 1)','Incomplete': 'rgba(255, 193, 7, 1)'};
+
+    const statusCtx = document.getElementById('interviewStatusChart').getContext('2d');
+    if (statusCounts.length > 0) {
+        new Chart(statusCtx, {type: 'doughnut', data: {labels: statusLabels, datasets: [{label: 'Interview Outcomes', data: statusCounts, backgroundColor: statusLabels.map(l => statusColorMap[l]), borderColor: statusLabels.map(l => statusBorderColorMap[l]), borderWidth: 1}]}, options: {responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }}});
+    }
+
+    // --- Chart: Interviews by Type (Pie Chart) ---
+    const typeCtx = document.getElementById('interviewTypeChart').getContext('2d');
+    if (typeCounts.length > 0) {
+        new Chart(typeCtx, {type: 'pie', data: {labels: typeLabels, datasets: [{label: 'Number of Interviews', data: typeCounts, backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)', 'rgba(75, 192, 192, 0.7)', 'rgba(153, 102, 255, 0.7)'], borderWidth: 1}]}, options: {responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }}});
+    }
+
+    // --- Chart: Interviews by Difficulty (Bar Chart) ---
+    const difficultyCtx = document.getElementById('interviewDifficultyChart').getContext('2d');
+    if (difficultyCounts.length > 0) {
+        new Chart(difficultyCtx, {type: 'bar', data: {labels: difficultyLabels, datasets: [{label: 'Number of Interviews', data: difficultyCounts, backgroundColor: ['rgba(75, 192, 192, 0.7)','rgba(255, 159, 64, 0.7)','rgba(255, 205, 86, 0.7)'], borderWidth: 1}]}, options: {scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, responsive: true, plugins: { legend: { display: false } }}});
+    }
+});
+</script>
+{% endif %}
+{% endblock body %}

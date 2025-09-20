@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block body %}
+<style>
+  .prt{
+        background:linear-gradient(#036a905b,rgba(255, 255, 255, 0.831),#036b90);
+    }
+</style>
+<div class="container my-5 prt">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header text-white text-center p-4" style="background-color: #036b90;">
+          <h3 class="mb-0"><i class="fa-solid fa-building-user me-2"></i>Recruiter Registration</h3>
+        </div>
+        <div class="card-body p-4 p-sm-5">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form action="{% url 'ereg' %}" method="post" name="ereg">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              <input type="text" name="firmname" id="firmname" class="form-control" placeholder="Firm/Company Name" required/>
+              <label for="firmname">Firm/Company Name</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <textarea name="firmwork" id="firmwork" class="form-control" placeholder="Nature Of Work" style="height: 100px"></textarea>
+              <label for="firmwork">Nature Of Work</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <textarea name="firmaddress" id="firmaddress" class="form-control" placeholder="Firm Address" style="height: 100px"></textarea>
+              <label for="firmaddress">Firm Address</label>
+            </div>
+
+            <hr class="my-4">
+            <h5 class="mb-3">Contact Person Details</h5>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input type="text" name="cpname" id="cpname" class="form-control" placeholder="Contact Person Name" required/>
+                  <label for="cpname">Contact Person Name</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input type="tel" name="cpcontactno" id="cpcontactno" class="form-control" placeholder="Contact Person No." required/>
+                  <label for="cpcontactno">Contact Person No.</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="email" name="cpemailaddress" id="cpemailaddress" class="form-control" placeholder="Contact Person Email" required/>
+              <label for="cpemailaddress">Contact Person Email</label>
+            </div>
+
+            <hr class="my-4">
+            <h5 class="mb-3">Company Identification</h5>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input type="text" name="aadharno" id="aadharno" class="form-control" placeholder="Aadhar No." required/>
+                  <label for="aadharno">Aadhar No.</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input type="text" name="panno" id="panno" class="form-control" placeholder="PAN No." required/>
+                  <label for="panno">PAN No.</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" name="gstno" id="gstno" class="form-control" placeholder="GST No." required/>
+              <label for="gstno">GST No.</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password" required/>
+              <label for="password">Password</label>
+            </div>
+            <div class="form-floating mb-4">
+              <input type="password" name="confirmpassword" id="confirmpassword" class="form-control" placeholder="Confirm Password" required/>
+              <label for="confirmpassword">Confirm Password</label>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+              <button type="submit" class="btn btn-lg text-white px-5" style="background-color: #036b90;">Register</button>
+              <button type="reset" class="btn btn-secondary btn-lg px-5">Reset</button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-center py-3 bg-light">
+          <div class="small">Already have an account? <a href="{% url 'login' %}">Login here</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const form = document.querySelector('form[name="ereg"]');
+  form.addEventListener('submit', function(event) {
+    const password = form.querySelector('input[name="password"]');
+    const confirmPassword = form.querySelector('input[name="confirmpassword"]');
+    if (password.value !== confirmPassword.value) {
+      alert("Passwords do not match. Please try again.");
+      confirmPassword.focus();
+      event.preventDefault(); // Stop form submission
+    }
+  });
+</script>
+{% endblock body %}

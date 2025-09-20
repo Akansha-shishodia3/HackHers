@@ -1,0 +1,384 @@
+{% extends "jobbase.html" %}
+{% load static %}
+
+{% block body %}
+<style>
+    /* Full height setup */
+    #chat-page-container {
+        display: flex;
+        flex-direction: column;
+        height: 80vh; /* Use viewport height for full screen, or 100% if the parent is already sized */
+        background-color: #f0f4f9; /* Soft background color for the page */
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        
+    }
+
+    /* Header for the chat page */
+    .chat-header {
+        background-color: #ffffff;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        text-align: center;
+    }
+    .chat-header h4 {
+        margin: 0;
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Main chat display area */
+    #chat-container {
+        flex-grow: 1; /* Allows it to fill the remaining vertical space */
+        overflow-y: auto; /* Enables scrolling for chat history */
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background-color: #f9f9f9;
+        scroll-behavior: smooth;
+        
+    }
+
+    /* Chat message styles */
+    .chat-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        max-width: 90%; /* Responsive maximum width */
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Avatar styles */
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .avatar i {
+        font-size: 1.2rem;
+    }
+
+    /* Specific message types */
+    .user-message {
+        margin-left: auto;
+        flex-direction: row-reverse;
+    }
+    .user-message .message-bubble {
+        background-color: #007bff; /* Primary blue for user messages */
+        color: white;
+        border-radius: 1rem 0.25rem 1rem 1rem;
+    }
+    .user-message .avatar {
+        background-color: #007bff;
+    }
+
+    .bot-message {
+        margin-right: auto;
+    }
+    .bot-message .message-bubble {
+        background-color: #ffffff; /* White background for bot messages */
+        color: #333;
+        border: 1px solid #e5e5e5;
+        border-radius: 0.25rem 1rem 1rem 1rem;
+    }
+    
+    /* Message bubble content */
+    .message-bubble {
+        padding: 0.75rem 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        line-height: 1.5;
+        word-wrap: break-word;
+        max-width: 100%; /* Ensures the bubble itself doesn't overflow */
+    }
+
+    /* Styles for markdown content */
+    .message-bubble p { margin-bottom: 0.5rem; }
+    .message-bubble p:last-child { margin-bottom: 0; }
+    .message-bubble ul, .message-bubble ol {
+        padding-left: 1.5rem;
+        margin: 0.5rem 0;
+    }
+    .message-bubble li { margin-bottom: 0.25rem; }
+    .message-bubble pre {
+        background-color: #eef2f6;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        font-size: 0.9em;
+        border: 1px solid #ddd;
+    }
+    .message-bubble code {
+        background-color: #eef2f6;
+        padding: 0.2em 0.4em;
+        border-radius: 6px;
+        font-size: 0.9em;
+    }
+    .message-bubble pre code {
+        background-color: transparent;
+        padding: 0;
+        font-size: inherit;
+    }
+    .message-bubble h1, .message-bubble h2, .message-bubble h3, .message-bubble h4, .message-bubble h5, .message-bubble h6 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .typing-indicator span {
+        height: 6px;
+        width: 6px;
+        background-color: #999;
+        border-radius: 50%;
+        display: inline-block;
+        animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .typing-indicator span:nth-of-type(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-of-type(2) { animation-delay: -0.16s; }
+
+    /* Input form container */
+    #chat-form-container {
+        padding: 1rem 1.5rem;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: center;
+    }
+
+    #chat-form {
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    #message-input {
+        border-radius: 20px;
+        padding: 1rem 1.25rem;
+        border: 1px solid #ddd;
+        transition: border-color 0.2s;
+    }
+    #message-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+
+    #send-button {
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        background-color: #007bff;
+        border-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+        margin-left: 0.5rem;
+    }
+    #send-button:hover {
+        background-color: #0056b3;
+        border-color: #004a99;
+    }
+
+    .input-group > .form-control {
+        border-radius: 20px;
+    }
+    .input-group > .btn {
+        border-radius: 20px;
+    }
+    .input-group {
+        align-items: center;
+    }
+    .input-group .form-control {
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    /* Small screen adjustments */
+    @media (max-width: 768px) {
+        #chat-page-container {
+            height: 100vh;
+        }
+        .chat-message {
+            max-width: 95%;
+        }
+    }
+</style>
+
+<div id="chat-page-container" class="container-fluid px-3 pt-2">
+    <div class="chat-header">
+        <h4><i class="fa-solid fa-comment-medical me-2"></i> Career Advice Chatbot</h4>
+    </div>
+    <div id="chat-container">
+        <div class="chat-message bot-message">
+            <div class="avatar"><img src="/static/images/My%20JAM%20images/JAM_logo.png" alt="JAM Logo" style="width: 100%; height: 100%; border-radius: 50%;"></div>
+            <div class="message-bubble">
+                Hello! I am your AI career advisor. You can ask me about resume tips, interview preparation, career paths, and more. How can I help you today?
+            </div>
+        </div>
+    </div>
+    <div id="chat-form-container">
+        <form id="chat-form" autocomplete="off">
+            <div class="input-group">
+                <input type="text" id="message-input" class="form-control form-control-lg" placeholder="Ask for career advice..." required>
+                <button class="btn btn-primary btn-lg" type="submit" id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@4.2.12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const chatContainer = document.getElementById('chat-container');
+    const sendButton = document.getElementById('send-button');
+
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const messageText = messageInput.value.trim();
+        if (messageText === '') return;
+
+        appendMessage(messageText, 'user');
+        messageInput.value = '';
+        sendButton.disabled = true;
+        showTypingIndicator();
+
+        try {
+            const response = await fetch("{% url 'career_advice' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ message: messageText })
+            });
+
+            if (!response.ok) {
+                removeTypingIndicator();
+                const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status}` }));
+                const errorMessage = errorData.error || `An unknown error occurred.`;
+                appendMessage(errorMessage, 'bot', true);
+                return;
+            }
+
+            const botMessageDiv = appendMessage('', 'bot');
+            const messageBubbleDiv = botMessageDiv.querySelector('.message-bubble');
+            let fullReply = '';
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                
+                const chunk = decoder.decode(value, { stream: true });
+                fullReply += chunk;
+                
+                messageBubbleDiv.innerHTML = DOMPurify.sanitize(marked.parse(fullReply));
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            removeTypingIndicator();
+            appendMessage('Sorry, a network error occurred. Please try again.', 'bot', true);
+        } finally {
+            removeTypingIndicator();
+            sendButton.disabled = false;
+            messageInput.focus();
+        }
+    });
+
+    function appendMessage(text, sender, isError = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
+        
+        const avatarInitial = '{{ obj.name.0|upper|default:"U" }}';
+        const avatarContent = sender === 'user' ? avatarInitial : `<img src="/static/images/My%20JAM%20images/JAM_logo.png" alt="JAM Logo" style="width: 100%; height: 100%; border-radius: 50%;">`;
+
+        const messageBubbleDiv = document.createElement('div');
+        messageBubbleDiv.classList.add('message-bubble');
+
+        if (sender === 'bot') {
+            if (isError) {
+                messageBubbleDiv.classList.add('alert', 'alert-danger');
+            }
+            const rawHtml = marked.parse(text);
+            messageBubbleDiv.innerHTML = DOMPurify.sanitize(rawHtml);
+        } else {
+            messageBubbleDiv.textContent = text;
+        }
+
+        messageDiv.innerHTML = `<div class="avatar">${avatarContent}</div>`;
+        messageDiv.appendChild(messageBubbleDiv);
+
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        return messageDiv;
+    }
+
+    function showTypingIndicator() {
+        if (document.getElementById('typing-indicator')) return;
+
+        const indicatorDiv = document.createElement('div');
+        indicatorDiv.id = 'typing-indicator';
+        indicatorDiv.classList.add('chat-message', 'bot-message');
+        indicatorDiv.innerHTML = `
+            <div class="avatar"><img src="/static/images/My%20JAM%20images/JAM_logo.png" alt="JAM Logo" style="width: 100%; height: 100%; border-radius: 50%;"></div>
+            <div class="message-bubble typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        chatContainer.appendChild(indicatorDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+});
+</script>
+{% endblock body %}

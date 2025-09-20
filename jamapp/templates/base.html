@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>Smart Hire AI</title>
+    <link
+      href="{% static 'css/bootstrap.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="{% static 'css/style.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+      integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link href="{% static 'images/My JAM images/JAM_logo.png' %}" rel="icon" />
+    <style>
+      /* Custom styles for index.html homepage features */
+      .section-title {
+        font-weight: bold;
+        color: #2c3e50; /* A more modern, softer black */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .card.card-feature {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border-width: 1px !important;
+        border-color: #e9ecef !important; /* Lighter border */
+      }
+
+      .card.card-feature:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+      }
+
+      .card-feature .card-img-top {
+        object-fit: cover;
+        height: 12rem;
+      }
+
+      .feature-section {
+        border-radius: 15px;
+        padding: 1rem;
+        color: #34495e;
+        background-color: #f8f9fa; /* A light fallback */
+      }
+
+      .feature-gradient-jobseeker {
+        background-image: linear-gradient(to bottom right, #e0f7fa, #fce4ec);
+      }
+
+      .feature-gradient-recruiter {
+        background-image: linear-gradient(156deg, #e0f2f1, #fff9c4);
+      }
+
+      .feature-section .feature-image {
+        border-radius: 10px;
+        border: 3px solid #dee2e6;
+      }
+
+      .feature-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .feature-list li {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+      }
+
+      .feature-list li::before {
+        content: '\f058'; /* Font Awesome check-circle icon */
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        color: var(--bs-success);
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+      }
+    </style>
+    <script type="text/javascript">
+      function show() {
+        document.getElementById("myPass").setAttribute("type", "text");
+      }
+
+      function hide() {
+        document.getElementById("myPass").setAttribute("type", "password");
+      }
+    </script>
+  </head>
+  <body>
+    <div class="d-flex flex-column" style="min-height: 100vh;">
+      <!--Header start-->
+      <div class="bg-dark">
+        <div class="container">
+          <div class="row text-light py-2">
+            <div class="col-md-4 text-center">
+              <i class="fa-solid fa-phone"> </i> Call Us : +91 8810606655
+            </div>
+            <div class="col-md-4 text-center">
+              <i class="fa-solid fa-envelope"></i> Mail Us : smarthire_ai@gmail.com
+            </div>
+            <div class="col-md-4 text-center">
+              <i class="fa-solid fa-location-dot"></i> Address : Sec-24, Sanjay
+              Nagar, Ghaziabad
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Header end-->
+      <!--Logo Row start-->
+      <div class="container">
+        <div class="row mt-2 align-items-center">
+          <div class="col-sm-12 p-1 text-center">
+            <img
+              src="{% static 'images/My JAM images/JAM_logo.png' %}"
+              style="width: 80px; height: auto;"
+              alt="Logo"
+              title="Smart Hire AI"
+              class="me-2"
+            />
+            <span class="h1 fw-bold" style="font-family: 'Times New Roman', Times, serif;">
+              <span style="color: #036b90">S</span>mart
+              <span style="color: #036b90">H</span>ire <span style="color: #036b90">A</span>I
+              <small
+                class="fs-6 fw-bold"
+                style="color: #036b90; font-family: 'Times New Roman', Times, serif;"
+                >(Think Smart, Hire Smarter.)</small
+              >
+            </span>
+          </div>
+        </div>
+      </div>
+      <!--Logo Row end-->
+
+      <!--Navbar start-->
+      <div class="sticky-top mt-2" style="font-size: 110%">
+        <nav
+          class="navbar navbar-expand-lg"
+          style="background-color: #036b90"
+        >
+          <div class="container">
+            <img
+              src="{% static 'images/My JAM images/JAM_LOG.png' %}"
+              width="6%"
+              height="3%"
+              alt="Logo"
+              title="Smart Hire AI"
+            />
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div
+              class="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    aria-current="page"
+                    href="{% url 'index' %}"
+                    ><i class="fa-solid fa-house"></i> Home</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about' %}"
+                    ><i class="fa-solid fa-address-card"></i> About Us</a
+                  >
+                </li>
+                <li class="nav-item dropdown">
+                  <a
+                    class="nav-link dropdown-toggle text-white"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="fa-solid fa-user-plus"></i> Registration
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a
+                        class="dropdown-item text-dark"
+                        href="{% url 'jobseekerreg' %}"
+                        >Jobseeker</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item text-dark"
+                        href="{% url 'employerreg' %}"
+                        >Recruiter</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login' %}"
+                    ><i class="fa-solid fa-right-to-bracket"></i> Login</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'contact' %}"
+                    ><i class="fa-solid fa-phone"></i> Contact Us</a
+                  >
+                </li>
+              </ul>
+              <div class="d-flex input-group w-auto">
+                <input
+                  class="form-control"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <!--Navbar End-->
+
+      {% block body %}
+
+
+{% endblock body %} 
+
+      <!--Footer start-->
+      <footer class="bg-dark mt-2">
+        <div class="container">
+          <div class="row text-white py-4">
+            <div class="col-md-3 text-center pt-3 mb-4">
+              <img
+                src="{% static 'images/My JAM images/JAM_logo.png' %}"
+                width="80px"
+                alt="Footer Logo"
+              />
+              <h4 class="mt-2" style="font-family: 'Times New Roman', Times, serif;">Smart Hire AI</h4>
+            </div>
+            <div class="col-md-2 text-light mb-4">
+              <h5>Useful Links</h5>
+              <hr class="border-warning border-2 opacity-100" style="width: 50px;" />
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <i class="fa-solid fa-building-columns"></i>
+                  <a href="{% url 'index' %}" class="text-white text-decoration-none footer-link"> Home</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-solid fa-book"></i>
+                  <a href="{% url 'about' %}" class="text-white text-decoration-none footer-link"> About Us</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-solid fa-address-card"></i>
+                  <a href="#" class="text-white text-decoration-none footer-link"> Portfolio</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-solid fa-user-doctor"></i>
+                  <a href="#" class="text-white text-decoration-none footer-link"> Jobs</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-solid fa-building"></i>
+                  <a href="#" class="text-white text-decoration-none footer-link"> Companies</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-md-2 text-light mb-4">
+              <h5>Other Links</h5>
+              <hr class="border-warning border-2 opacity-100" style="width: 50px;" />
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <i class="fa-solid fa-circle-question"></i>
+                  <a href="{% url 'contact' %}" class="text-white text-decoration-none footer-link"> Help Center</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-brands fa-google"></i>
+                  <a href="https://www.google.com" target="_blank" class="text-white text-decoration-none footer-link"
+                    >Google</a
+                  >
+                </li>
+                <li class="mb-2">
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                  <a href="#" class="text-white text-decoration-none footer-link"> Notices</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-brands fa-hornbill"></i>
+                  <a href="#" class="text-white text-decoration-none footer-link"> Grievances</a>
+                </li>
+                <li class="mb-2">
+                  <i class="fa-solid fa-flag-checkered"></i>
+                  <a href="#" class="text-white text-decoration-none footer-link"> Report Issue</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-md-5 mb-4">
+              <!--Map start-->
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3500.0168859550604!2d77.45334767495895!3d28.68914148150869!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cf19d0066c2bd%3A0xce2128423fa59ccd!2sNITRA%20Technical%20Campus!5e0!3m2!1sen!2sin!4v1758228887507!5m2!1sen!2sin" 
+                width="100%"
+                height="100%"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+              <!--Map End-->
+            </div>
+          </div>
+        </div>
+      </footer>
+      <!--Footer End-->
+    </div>
+  </body>
+</html>
